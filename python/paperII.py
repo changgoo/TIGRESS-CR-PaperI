@@ -26,7 +26,7 @@ from plot_slices import plot_snapshot_comp, plot_slices_cr
 
 
 basedir = "/scratch/gpfs/changgoo/tigress_classic/"
-
+PATH = osp.dirname(osp.abspath(__file__))
 
 GROUPS = {
     "s28": dict(
@@ -178,7 +178,7 @@ def run_group(group, num="all"):
         if s.options["cosmic_ray"]:
             s.load_zprof_postproc()
 
-    ps.setup(f"../{group}_figures", model_name, model_color)
+    ps.setup(f"{PATH}/../paperII_figures/{group}_figures", model_name, model_color)
 
     draw_figures(simgroup, group, cfg, num=num)
 
@@ -239,6 +239,11 @@ def draw_figures(simgroup, group, cfg, num="all"):
         ps.plot_jointpdf(simgroup, group)
         ps.plot_jointpdf(simgroup, group, flux="eflux")
         ps.plot_voutpdf(simgroup, group)
+
+    if num == "all" or num == 12:
+        for m, s in simgroup["all"].items():
+            if s.options["cosmic_ray"]:
+                ps.plot_crgain_cumsum(s, m)
 
 
 def _parse_num(val):
