@@ -161,7 +161,9 @@ class LoadSimTIGRESSPP(
     def add_temperature(self, ds):
         T1 = ds["press"] / ds["rho"] * (self.u.temperature_mu).value
         if self.options["newcool"]:
-            mu = 1.4 / (1.1 + ds["rEL"] - ds["rH2"])
+            # NCR evolves electron and H2 abundances, so mu must be computed
+            # cell by cell rather than inferred from a tabulated cooling curve.
+            mu = self.u.muH / (1.1 + ds["rEL"] - ds["rH2"])
         else:
             if hasattr(self, "coolftn"):
                 logT1 = np.log10(T1)
